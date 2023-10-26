@@ -23,19 +23,18 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest // 테스트용 애플리케이션 컨텍스트
 @AutoConfigureMockMvc // MockMvc 생성 및 자동 구성
 
- /*
- * @SpringBootTest :  전체 빈을 메모리에 올리는 테스트 -> controller, service, repository 전부 다
- * @AutoConfigureMockMvc:   MockMvc를 주입 받아서 톰캣 서버를 띄우지 않을 상태로 API 요청 부분을 mocking하여 사용
- *
- * */
+        /*
+         * @SpringBootTest :  전체 빈을 메모리에 올리는 테스트 -> controller, service, repository 전부 다
+         * @AutoConfigureMockMvc:   MockMvc를 주입 받아서 톰캣 서버를 띄우지 않을 상태로 API 요청 부분을 mocking하여 사용
+         *
+         * */
 
 class BlogApiControllerTest {
 
@@ -113,5 +112,25 @@ class BlogApiControllerTest {
                 .andExpect(jsonPath("$[0].title").value(title));
     }
 
+    @DisplayName("삭제")
+    @Test
+    void deleteArticle() throws Exception {
 
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+
+        Article saveArticle = blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .build()
+        );
+
+        mockMvc.perform(delete(url, saveArticle.getId()))
+                .andExpect(status().isOk());
+
+        List<Article> articles = blogRepository.findAll();
+
+        assertThat(articles).isEmpty();
+    }
 }
