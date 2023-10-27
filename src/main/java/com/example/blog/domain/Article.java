@@ -1,8 +1,12 @@
 package com.example.blog.domain;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -14,7 +18,7 @@ public class Article {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name="title", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "content", nullable = false)
@@ -33,6 +37,11 @@ public class Article {
         this.content = content;
     }
 
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
